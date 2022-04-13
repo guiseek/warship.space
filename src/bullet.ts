@@ -1,12 +1,8 @@
 import { Position } from './types'
+import laser from './assets/sounds/laser.mp3'
 
 let N = 0
 
-function shoot(src: `sounds/${string}`, volume = 0.5) {
-  const audio = new Audio(`assets/${src}`)
-  audio.volume = volume
-  return audio
-}
 
 export class Bullet {
   i = N++
@@ -21,7 +17,7 @@ export class Bullet {
     this.front = Object.create(position)
 
     if (this.i % 5 === 0) {
-      const audio = shoot(`sounds/laser.mp3`)
+      const audio = new Audio(laser)
       audio.play()
     }
 

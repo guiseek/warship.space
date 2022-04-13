@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "domain": "cp CNAME dist/",
+    "deploy": "npm run build && npm run domain"
   },
   "devDependencies": {
     "sass": "^1.50.0",

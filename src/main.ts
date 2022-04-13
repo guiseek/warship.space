@@ -1,4 +1,5 @@
 import { Bullet } from './bullet'
+import { init } from './solar-system'
 
 import './style.scss'
 
@@ -31,8 +32,10 @@ ctx.strokeStyle = `rgb(0, 200, 200)`
 function drawBG(ctx: CanvasRenderingContext2D, height: number) {
   const gradient = ctx.createLinearGradient(0, 0, 0, height)
 
-  gradient.addColorStop(0, '#271232')
-  gradient.addColorStop(1, '#183070')
+  gradient.addColorStop(0, '#000000')
+  gradient.addColorStop(1, '#010101')
+  // gradient.addColorStop(0, '#271232')
+  // gradient.addColorStop(1, '#183070')
 
   ctx.fillStyle = gradient
 }
@@ -168,3 +171,7 @@ addEventListener('keyup', (e) => {
   }
   if (is) e.preventDefault()
 })
+
+
+
+init()

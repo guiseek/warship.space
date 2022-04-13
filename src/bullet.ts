@@ -18,6 +18,7 @@ export class Bullet {
 
     if (this.i % 5 === 0) {
       const audio = new Audio(laser)
+      audio.volume = 0.1
       audio.play()
     }
 

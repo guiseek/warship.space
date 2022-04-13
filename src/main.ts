@@ -40,6 +40,22 @@ function drawBG(ctx: CanvasRenderingContext2D, height: number) {
   ctx.fillStyle = gradient
 }
 
+function handleDeviceOrientation(e: DeviceOrientationEvent) {
+  // const transform = 'rotate(' + e.gamma + 'deg) rotate3d(1, 0, 0, ' +
+  //     e.beta + 'deg)';
+
+  if (e.beta && e.beta > 0) {
+    control.right = true
+    control.left = true
+  } else {
+    control.left = true
+    control.right = false
+  }
+  console.log(e);
+  
+}
+ondeviceorientation = handleDeviceOrientation
+
 function anim() {
   window.requestAnimationFrame(anim)
 

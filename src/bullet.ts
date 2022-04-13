@@ -1,23 +1,26 @@
-import { Position } from './types'
 import laser from './assets/sounds/laser.mp3'
+import { getRandomColor } from './utilities'
+import { Position } from './types'
 
-let N = 0
 
 
 export class Bullet {
-  i = N++
+  static inc = 0
 
   position: Position
   front: Position
 
   velocity: Position
 
+  color = getRandomColor()
+
   constructor(position: Position, radians: number) {
     this.position = Object.create(position)
     this.front = Object.create(position)
 
-    if (this.i % 5 === 0) {
+    if (Bullet.inc++ % 5 === 0) {
       const audio = new Audio(laser)
+      audio.inputMode = 'gamepad'
       audio.volume = 0.1
       audio.play()
     }
@@ -29,8 +32,8 @@ export class Bullet {
       y: Math.sin(radians) * velocity,
     }
 
-    this.position.x += this.velocity.x * 6
-    this.position.y += this.velocity.y * 6
+    this.position.x += this.velocity.x * 16
+    this.position.y += this.velocity.y * 16
 
     this.front.x += this.velocity.x * 5
     this.front.y += this.velocity.y * 5
@@ -46,6 +49,7 @@ export class Bullet {
     ctx.beginPath()
     ctx.moveTo(this.position.x, this.position.y)
     ctx.lineTo(this.front.x, this.front.y)
+    ctx.strokeStyle = this.color
     ctx.stroke()
     ctx.closePath()
   }

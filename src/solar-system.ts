@@ -7,56 +7,64 @@ const image = {
   moon: new Image(),
   earth: new Image(),
 }
+export class SolarSystem {
+  constructor(public canvas: HTMLCanvasElement) {}
 
-const query = <T extends HTMLElement>(selector: string) =>
-  document.querySelector<T>(selector)!
+  init() {
+    image.sun.src = sun
+    image.moon.src = moon
+    image.earth.src = earth
+    this.draw()
+  }
 
-export function init() {
-  image.sun.src = sun
-  image.moon.src = moon
-  image.earth.src = earth
-  requestAnimationFrame(draw)
-}
+  draw = this._draw()
 
-function draw() {
-  const canvas = query<HTMLCanvasElement>('#ss')!
-  const ctx = canvas.getContext('2d')!
+  private _draw() {
+    return () => {
+      const ctx = this.canvas.getContext('2d')!
 
-  ctx.globalCompositeOperation = 'destination-over'
-  ctx.clearRect(0, 0, 300, 300) // clear canvas
+      ctx.globalCompositeOperation = 'destination-over'
+      
+      // clear canvas
+      ctx.clearRect(0, 0, 300, 300)
 
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.4)'
-  ctx.strokeStyle = 'rgba(0, 153, 255, 0.4)'
-  ctx.save()
-  ctx.translate(150, 150)
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)'
+      ctx.strokeStyle = 'rgba(0, 153, 255, 0.4)'
+      ctx.save()
+      ctx.translate(150, 150)
 
-  // Earth
-  const time = new Date()
-  ctx.rotate(
-    ((2 * Math.PI) / 60) * time.getSeconds() +
-      ((2 * Math.PI) / 60000) * time.getMilliseconds()
-  )
-  ctx.translate(105, 0)
-  ctx.fillRect(0, -12, 40, 24) // Shadow
-  ctx.drawImage(image.earth, -12, -12)
+      // Earth
+      const time = new Date()
+      ctx.rotate(
+        ((2 * Math.PI) / 60) * time.getSeconds() +
+          ((2 * Math.PI) / 60000) * time.getMilliseconds()
+      )
+      ctx.translate(105, 0)
+      // Shadow
+      ctx.fillRect(0, -12, 40, 24)
+      ctx.drawImage(image.earth, -12, -12)
 
-  // Moon
-  ctx.save()
-  ctx.rotate(
-    ((2 * Math.PI) / 6) * time.getSeconds() +
-      ((2 * Math.PI) / 6000) * time.getMilliseconds()
-  )
-  ctx.translate(0, 28.5)
-  ctx.drawImage(image.moon, -3.5, -3.5)
-  ctx.restore()
+      // Moon
+      ctx.save()
+      ctx.rotate(
+        ((2 * Math.PI) / 6) * time.getSeconds() +
+          ((2 * Math.PI) / 6000) * time.getMilliseconds()
+      )
+      ctx.translate(0, 28.5)
+      ctx.drawImage(image.moon, -3.5, -3.5)
+      ctx.restore()
 
-  ctx.restore()
+      ctx.restore()
 
-  ctx.beginPath()
-  ctx.arc(150, 150, 105, 0, Math.PI * 2, false) // Earth orbit
-  ctx.stroke()
+      ctx.beginPath()
+      // Earth orbit
+      ctx.arc(150, 150, 105, 0, Math.PI * 2, false)
+      ctx.strokeStyle = '#ffffff11'
+      ctx.stroke()
 
-  ctx.drawImage(image.sun, 0, 0, 300, 300)
+      ctx.drawImage(image.sun, 0, 0, 300, 300)
 
-  window.requestAnimationFrame(draw)
+      requestAnimationFrame(this._draw())
+    }
+  }
 }

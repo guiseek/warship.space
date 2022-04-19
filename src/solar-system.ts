@@ -1,12 +1,13 @@
-import sun from './assets/sun.png'
+import sun from './assets/sun1.png'
 import moon from './assets/moon.png'
-import earth from './assets/earth.png'
+import earth from './assets/terra.png'
 
 const image = {
   sun: new Image(),
   moon: new Image(),
   earth: new Image(),
 }
+
 export class SolarSystem {
   constructor(public canvas: HTMLCanvasElement) {}
 
@@ -24,7 +25,7 @@ export class SolarSystem {
       const ctx = this.canvas.getContext('2d')!
 
       ctx.globalCompositeOperation = 'destination-over'
-      
+
       // clear canvas
       ctx.clearRect(0, 0, 300, 300)
 
@@ -41,8 +42,8 @@ export class SolarSystem {
       )
       ctx.translate(105, 0)
       // Shadow
-      ctx.fillRect(0, -12, 40, 24)
-      ctx.drawImage(image.earth, -12, -12)
+      ctx.fillRect(0, -16, 48, 32)
+      ctx.drawImage(image.earth, -16, -16)
 
       // Moon
       ctx.save()
@@ -50,7 +51,7 @@ export class SolarSystem {
         ((2 * Math.PI) / 6) * time.getSeconds() +
           ((2 * Math.PI) / 6000) * time.getMilliseconds()
       )
-      ctx.translate(0, 28.5)
+      ctx.translate(0, 40.5)
       ctx.drawImage(image.moon, -3.5, -3.5)
       ctx.restore()
 

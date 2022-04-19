@@ -7,6 +7,7 @@ export class Ship {
     right: false,
     forward: false,
     shoot: false,
+    turbo: false,
   }
 
   vel = { x: 0, y: 0 }
@@ -25,6 +26,7 @@ export class Ship {
 
   update(width: number, height: number) {
     this.ctx.strokeStyle = 'rgba(200, 200, 200, .8)'
+    this.ctx.fillStyle = 'rgba(222, 222, 222, .02)'
     this.ctx.lineWidth = 2
     this.ctx.beginPath()
     this.ctx.moveTo(
@@ -49,10 +51,22 @@ export class Ship {
      * Velocidade da rotação
      */
     if (this.control.left) {
-      this.radVel -= this.control.forward ? 0.001 : 0.003
+      if (this.control.forward && this.control.turbo) {
+        this.radVel -= 0.005
+      } else if (this.control.forward) {
+        this.radVel -= 0.001
+      } else {
+        this.radVel -= 0.003
+      }
     }
     if (this.control.right) {
-      this.radVel += this.control.forward ? 0.001 : 0.003
+      if (this.control.forward && this.control.turbo) {
+        this.radVel += 0.005
+      } else if (this.control.forward) {
+        this.radVel += 0.001
+      } else {
+        this.radVel += 0.003
+      }
     }
 
     this.radians += this.radVel *= 0.9
@@ -61,8 +75,8 @@ export class Ship {
      * Velocidade
      */
     if (this.control.forward) {
-      this.vel.x += Math.cos(this.radians) / 8
-      this.vel.y += Math.sin(this.radians) / 8
+      this.vel.x += Math.cos(this.radians) / (this.control.turbo ? 0.5 : 5)
+      this.vel.y += Math.sin(this.radians) / (this.control.turbo ? 0.5 : 5)
     }
 
     /**

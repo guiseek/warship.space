@@ -8,11 +8,10 @@ const STAR_MIN_SCALE = 0.2
 const OVERFLOW_THRESHOLD = 50
 const STAR_COUNT = (window.innerWidth + window.innerHeight) / 8
 
-
 export class Canvas {
   width: number
   height: number
-  
+
   scale = 1 // device pixel ratio
 
   ctx: CanvasRenderingContext2D
@@ -49,33 +48,7 @@ export class Canvas {
 
   private _listenControls() {
     addEventListener('keydown', (e) => {
-      console.log(e.key)
-
       let is = true
-      switch (e.key) {
-        case 'a':
-          this.ships.forEach((ship) => {
-            ship.control.left = true
-          })
-          break
-        case 'w':
-          this.ships.forEach((ship) => {
-            ship.control.forward = true
-          })
-          break
-        case 'd':
-          this.ships.forEach((ship) => {
-            ship.control.right = true
-          })
-          break
-        case 'Control':
-          this.ships.forEach((ship) => {
-            ship.control.shoot = true
-          })
-          break
-        default:
-          is = false
-      }
 
       switch (e.key) {
         case 'ArrowLeft':
@@ -86,6 +59,9 @@ export class Canvas {
           break
         case 'ArrowRight':
           this.ship.control.right = true
+          break
+        case 'Control':
+          this.ship.control.turbo = true
           break
         case ' ':
           this.ship.control.shoot = true
@@ -100,31 +76,6 @@ export class Canvas {
       let is = true
 
       switch (e.key) {
-        case 'a':
-          this.ships.forEach((ship) => {
-            ship.control.left = false
-          })
-          break
-        case 'w':
-          this.ships.forEach((ship) => {
-            ship.control.forward = false
-          })
-          break
-        case 'd':
-          this.ships.forEach((ship) => {
-            ship.control.right = false
-          })
-          break
-        case 'Control':
-          this.ships.forEach((ship) => {
-            ship.control.shoot = false
-          })
-          break
-        default:
-          is = false
-      }
-
-      switch (e.key) {
         case 'ArrowLeft':
           this.ship.control.left = false
           break
@@ -133,6 +84,9 @@ export class Canvas {
           break
         case 'ArrowRight':
           this.ship.control.right = false
+          break
+        case 'Control':
+          this.ship.control.turbo = false
           break
         case ' ':
           this.ship.control.shoot = false
@@ -157,8 +111,13 @@ export class Canvas {
       this.ship.update(this.width, this.height)
 
       ++this.ship.lastBullet
-      if (this.ship.control.shoot && this.ship.lastBullet > this.ship.bulletTime) {
-        this.ship.bullets.push(new Bullet(this.ship.position, this.ship.radians))
+      if (
+        this.ship.control.shoot &&
+        this.ship.lastBullet > this.ship.bulletTime
+      ) {
+        this.ship.bullets.push(
+          new Bullet(this.ship.position, this.ship.radians)
+        )
         this.ship.lastBullet = 0
       }
       for (let i = 0; i < this.ship.bullets.length; ++i) {
@@ -207,13 +166,13 @@ export class Canvas {
       }
 
       this.stars.forEach((star) => {
-        star.x += (this.ship.vel.x * -1) * star.z
-        star.y += (this.ship.vel.y * -1) * star.z
-    
+        star.x += this.ship.vel.x * -1 * star.z
+        star.y += this.ship.vel.y * -1 * star.z
+
         star.x += (star.x - this.width / 2) * star.vel.z * star.z
         star.y += (star.y - this.height / 2) * star.vel.z * star.z
         star.z += star.vel.z
-    
+
         // recycle when out of bounds
         if (
           star.x < -OVERFLOW_THRESHOLD ||
@@ -231,19 +190,19 @@ export class Canvas {
         this.ctx.lineWidth = STAR_SIZE * star.z * this.scale
         this.ctx.globalAlpha = 0.5 + 0.5 * Math.random()
         this.ctx.strokeStyle = STAR_COLOR
-    
+
         this.ctx.beginPath()
         this.ctx.moveTo(star.x, star.y)
-    
-        let tailX = (this.ship.vel.x * -1) * 2;
-        let tailY = (this.ship.vel.y * -1) * 2;
-    
+
+        let tailX = this.ship.vel.x * -1 * 2
+        let tailY = this.ship.vel.y * -1 * 2
+
         // stroke() wont work on an invisible line
         if (Math.abs(tailX) < 0.1) tailX = 0.5
         if (Math.abs(tailY) < 0.1) tailY = 0.5
-    
+
         this.ctx.lineTo(star.x + tailX, star.y + tailY)
-    
+
         this.ctx.stroke()
       })
     }
@@ -256,28 +215,28 @@ export class Canvas {
 
   private _recycleStar(star: Star) {
     let direction = 'z'
-  
-    let vx = Math.abs(this.ship.vel.x);
-    let vy = Math.abs(this.ship.vel.y);
-  
+
+    let vx = Math.abs(this.ship.vel.x)
+    let vy = Math.abs(this.ship.vel.y)
+
     if (vx > 1 || vy > 1) {
       let axis
-  
+
       if (vx > vy) {
         axis = Math.random() < vx / (vx + vy) ? 'h' : 'v'
       } else {
         axis = Math.random() < vy / (vx + vy) ? 'v' : 'h'
       }
-  
+
       if (axis === 'h') {
         direction = this.ship.vel.x > 0 ? 'l' : 'r'
       } else {
         direction = this.ship.vel.y > 0 ? 't' : 'b'
       }
     }
-  
+
     star.z = STAR_MIN_SCALE + Math.random() * (1 - STAR_MIN_SCALE)
-  
+
     if (direction === 'z') {
       star.z = 0.1
       star.x = Math.random() * this.width
@@ -297,22 +256,23 @@ export class Canvas {
     }
   }
 
-  private _createStars()  {
+  private _createStars() {
     for (let i = 0; i < STAR_COUNT; i++) {
-      
-      this.stars.push(new Star(0, 0, STAR_MIN_SCALE + Math.random() * (1 - STAR_MIN_SCALE)))
+      this.stars.push(
+        new Star(0, 0, STAR_MIN_SCALE + Math.random() * (1 - STAR_MIN_SCALE))
+      )
     }
   }
 
   resize() {
     this.scale = window.devicePixelRatio || 1
-  
+
     this.width = window.innerWidth * this.scale
     this.height = window.innerHeight * this.scale
-  
+
     this.canvas.width = this.width
     this.canvas.height = this.height
-  
+
     this.stars.forEach(this._placeStar)
   }
 

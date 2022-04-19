@@ -17,3 +17,5 @@ const solarSystem = new SolarSystem(canvasSSEl);
 solarSystem.init()
 
 canvas.init()
+
+onresize = () => canvas.resize()

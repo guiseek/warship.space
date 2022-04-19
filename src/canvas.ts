@@ -304,7 +304,7 @@ export class Canvas {
     }
   }
 
-  private _resize() {
+  resize() {
     this.scale = window.devicePixelRatio || 1
   
     this.width = window.innerWidth * this.scale
